@@ -1,0 +1,4 @@
+.new-movies {
+  display: flex;
+  flex-wrap: wrap;
+}
