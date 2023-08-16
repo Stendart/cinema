@@ -1,31 +1,41 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-import { getMovies } from '../../api/movies'
+import { loadNewMovies, loadAllMovies } from '../../api/movies'
 
 export interface Movie {
   Poster: string,
-  Runtime: string,
+  Runtime?: string,
   Title: string,
-  Year: string
+  Year?: string
 } 
 
 interface MovieState {
-  value: number,
-  list: Movie[]
+  status: 'loading' | 'idle' | 'error',
+  newMovies: Movie[],
+  allMovies: Movie[]
 }
 
 const initialState: MovieState = {
-  value: 0,
-  list: []
+  status: 'idle',
+  newMovies: [],
+  allMovies: []
 }
 
 
-export const fetchMovies = createAsyncThunk(
-  'users/fetchMovies',
-  async (userId: number, thunkAPI) => {
-    const response = await getMovies();
+export const fetchNewMovies = createAsyncThunk(
+  'movie/fetchNewMovies',
+  async () => {
+    const response = await loadNewMovies();
     return response
+  }
+)
+
+export const fetchAllMovie = createAsyncThunk(
+  'movie/fetchAllMovie',
+  async () => {
+    const responce = await loadAllMovies();
+    return responce
   }
 )
 
@@ -33,31 +43,34 @@ export const movieSlice = createSlice({
   name: 'movie',
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
-    },
+    // increment: (state) => {
+    //   state.value += 1
+    // },
+    // incrementByAmount: (state, action: PayloadAction<number>) => {
+    //   state.value += action.payload
+    // },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMovies.pending, (state, action) => {
-        // ToDo добавить прелоадер и обработку ошибок при загрузке
-        //  state.status = 'loading';
+      .addCase(fetchNewMovies.pending, (state, action) => {
+         state.status = 'loading';
       })
-      .addCase(fetchMovies.fulfilled, (state, action) => {
-        // Add user to the state array
-        console.log('===', action.payload);
-        
-        state.list.push(action.payload)
+      .addCase(fetchNewMovies.fulfilled, (state, action) => {
+        state.newMovies = action.payload;
+        state.status = 'idle';
+        // state.list.push(action.payload)
       })
-      // builder.addCase(loadChart.rejected, (state) => {
-      //   state.status = 'failed';
-      // });
+      .addCase(fetchNewMovies.rejected, (state) => {
+        state.status = 'error';
+      })
+
+      .addCase(fetchAllMovie.fulfilled, (state, action) => {
+        state.allMovies = action.payload;
+        // state.list.push(action.payload)
+      })
   },
 })
 
-export const { increment, incrementByAmount } = movieSlice.actions
+// export const { increment, incrementByAmount } = movieSlice.actions
 
 export default movieSlice.reducer

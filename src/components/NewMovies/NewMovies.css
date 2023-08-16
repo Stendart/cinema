@@ -1,4 +1,5 @@
 .new-movies {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 }

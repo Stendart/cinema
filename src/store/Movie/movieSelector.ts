@@ -1,3 +1,4 @@
 import { RootState } from ".."
 
-export const movieSelector = (state: RootState) => state.movie.list;
+export const newMoviesSelector = (state: RootState) => state.movie.newMovies;
+export const allMoviesSelector = (state: RootState) => state.movie.allMovies;

@@ -1,3 +1,21 @@
 .movie-card {
   border: 1px solid red;
+  background: #fffefe;
+  border-radius: 12px;
+  width: fit-content;
+  padding: 10px 15px;
+}
+
+.movie-card__img-wrap {
+  text-align: center;
+}
+
+.movie-card__img {
+  width: 300px;
+  height: 450px;
+}
+
+.movie-card__title {
+  margin: 20px 0;
+  text-align: center;
 }

@@ -1,64 +1,64 @@
 import React, { useState, useEffect } from 'react'
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+
 import { MovieCard } from '../MovieCard/MovieCard';
+import { Slider, Slide } from '../Slider/Slider';
 import './NewMovies.css'
 
-import { getMovies } from '../../api/movies';
+import { useAppDispatch } from '../../store'
+import { useSelector } from 'react-redux'
 
-import { RootState, useAppDispatch } from '../../store'
-import { useSelector, useDispatch } from 'react-redux'
-import { increment, fetchMovies, Movie } from '../../store/Movie/movieSlice';
-
-
-// преобразование ключей объекта Movie к нижниму регистру
-const prepareMoviesDataHelper = (movies: any[]) => {
-  const preparedMovies = movies.reduce<Movie[]>((acc, val) => {
-    let m = {} as Movie;
-
-    for(let key in val) {
-      const k = key.toLowerCase() as keyof Movie
-      m[k] = val[key];
-    }
-
-    return [...acc, m];
-  }, [])
-
-  return preparedMovies;
-}
+import { fetchNewMovies, fetchAllMovie } from '../../store/Movie/movieSlice';
+import { newMoviesSelector, allMoviesSelector } from '../../store/Movie/movieSelector';
 
 
 export const NewMovies = () => {
-  const movies = useSelector((state: RootState) => state.movie.list)
+  const newMovies = useSelector(newMoviesSelector)
+  // const allMovies = useSelector(allMoviesSelector)
   const dispatch = useAppDispatch()
 
-  // const [movies, setMovies] = useState<Movie[]>([]);
-
   useEffect(() => {
-    // getMovieList();
-    dispatch(fetchMovies(1))
+    dispatch(fetchNewMovies())
+    dispatch(fetchAllMovie())
   }, []);
 
-  // const getMovieList = async () => {
-  //   const movies = await getMovies();
-  //   const prepareMovies: Movie[] = prepareMoviesDataHelper(movies);
+  console.log('movies', newMovies);
+  // console.log('allMovies', allMovies);
 
-  //   setMovies(prepareMovies);
-  // }
-
-  console.log('movies', movies);
+  const sliderList: Slide[] = newMovies.map(movie => {
+    return {
+      item: MovieCard,
+      slideProps: movie
+    }
+  })
+  
 
   return (
     <div className='new-movies'>
-      { movies.map(movie =>
-          <MovieCard
-            key={movie.Title}
-            Poster={movie.Poster} 
-            Runtime={movie.Runtime} 
-            Title={movie.Title} 
-            Year={movie.Year}  
-          />
-        )
-      }
+      <h3>New Movies</h3>
+      <Slider slidesList={sliderList} />
+
+      <Swiper
+        spaceBetween={20}
+        slidesPerView={3}
+      >
+        { newMovies.map(movie =>
+            <SwiperSlide
+              key={movie.Title}
+            >
+              <MovieCard
+                Poster={movie.Poster} 
+                Runtime={movie.Runtime} 
+                Title={movie.Title} 
+                Year={movie.Year}  
+              />
+            </SwiperSlide>
+          )
+        }
+      </Swiper>
+      
     </div>
   )
 }

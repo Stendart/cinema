@@ -1,18 +1,10 @@
 import React, { FC } from 'react'
 
-import { increment, Movie } from '../../store/Movie/movieSlice';
+import { Movie } from '../../store/Movie/movieSlice';
 import './MovieCard.css'
 
-// interface MovieCardProps {
-//   poster: string,
-//   runtime: string,
-//   title: string,
-//   year: string
-// }
 
 interface MovieCardProps extends Movie {}
-
-
 
 export const MovieCard: FC<MovieCardProps> = (props) => {
   

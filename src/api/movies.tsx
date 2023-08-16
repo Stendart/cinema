@@ -1,7 +1,19 @@
+import { mockMovies } from "./mock-data";
 
+import { Movie } from "../store/Movie/movieSlice";
 
-export const getMovies = () => {
-  return fetch('https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies')
+export const loadNewMovies = () => {
+  return loadData('https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies');
+}
+
+export const loadAllMovies = (): any => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(mockMovies), 1000)
+  })
+}
+
+const loadData = (url: string) => {
+  return fetch(url)
         .then((response) => {
           return response.json()
         })
@@ -9,8 +21,4 @@ export const getMovies = () => {
         .catch(err => {
           console.log('err', err);
         });
-}
-
-const loadMovie = () => {
-  
 }
